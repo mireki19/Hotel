@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Scanner;
 public class Booking {
 private Guest mainGuest;
 List<Guest> otherGuests= new ArrayList<>();
@@ -13,12 +13,37 @@ private Room room;
 private LocalDate dateFrom;
 private LocalDate dateTo;
 private int i;
+private TypeOfStay typeOfStay;
+    Scanner sc = new Scanner(System.in);
 
-    public Booking(Guest mainGuest, Room room, LocalDate dateFrom, LocalDate dateTo) {
+    public void setTypeOfStay(TypeOfStay typeOfStay) {
+        this.typeOfStay = typeOfStay;
+    }
+
+    public Booking(Guest mainGuest, Room room, LocalDate dateFrom, LocalDate dateTo, TypeOfStay typeOfStay) {
         this.mainGuest = mainGuest;
         this.room = room;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+        this.typeOfStay=typeOfStay;
+    }
+
+    public Booking(Guest mainGuest, Room room, TypeOfStay typeOfStay){
+        this.mainGuest=mainGuest;
+        this.room=room;
+        this.typeOfStay=typeOfStay;
+        if (this.typeOfStay==TypeOfStay.HOLIDAY) {
+            this.dateFrom=LocalDate.now();
+            this.dateTo=LocalDate.now().plusDays(6);
+        } else {
+            System.out.println("Zadej datum příjezdu ve formátu d.m.rrr:");
+            String datum=sc.nextLine();
+            this.dateFrom = LocalDate.parse(datum, DateTimeFormatter.ofPattern("d.M.yyyy"));
+            System.out.println("Zadej datum odjezdu ve formátu d.m.rrr:");
+            datum=sc.nextLine();
+            this.dateTo = LocalDate.parse(datum, DateTimeFormatter.ofPattern("d.M.yyyy"));
+        }
+
     }
 
     public void addGuest(Guest otherGuest){
@@ -32,6 +57,7 @@ public void otherGuestName(){
         String popis="Pokoj: "+room.getRoomNumber();
         popis=popis+"\n Příjezd: "+dateFrom.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
         popis=popis+"\n Odjezd: "+dateTo.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+        popis=popis+"\n Druh pobytu: "+typeOfStay;
 
         popis=popis + "\n Host";
         if (otherGuests.size()>0) popis=popis+"é: \n"; else popis=popis+": ";
